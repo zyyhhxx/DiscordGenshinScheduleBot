@@ -1,21 +1,25 @@
-# bot.py
 import os
-
 import discord
+import random
 from dotenv import load_dotenv
+from discord.ext import commands
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-client = discord.Client()
+bot = commands.Bot(command_prefix="!")
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
+@bot.command(name="init", help='The First thing a program has to say')
+async def hello_world(ctx):
+    response = "Hello World!"
+    await ctx.send(response)
 
-    if message.content == '!init':
-        response = "Hello World!"
-        await message.channel.send(response)
+@bot.command(name='roll_dice', help='Simulates rolling dice')
+async def roll(ctx, number_of_dice: int, number_of_sides: int):
+    dice = [
+        str(random.choice(range(1, number_of_sides + 1)))
+        for _ in range(number_of_dice)
+    ]
+    await ctx.send(', '.join(dice))
 
-client.run(TOKEN)
+bot.run(TOKEN)
