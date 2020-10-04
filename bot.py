@@ -1,46 +1,34 @@
 import os
 import discord
 import random
-import json
 import datetime
 import pytz
+import getopt
+import data
+import sys
 from dotenv import load_dotenv
 from discord.ext import commands
 
-###############
-# Helper Functions
-###############
-
-# Read JSON data as a dictionary
-
-
-def readData(file: str):
-    # Read file
-    f = open(file, "r")
-    content = f.read()
-    f.close()
-
-    # Load as JSON
-    data_dic = json.loads(content)
-
-    weekday_dic = [None]*7
-    for i in range(7):
-        weekday_dic[i] = []
-    for character in data_dic:
-        for weekday in data_dic[character]:
-            weekday_dic[weekday-1].append(character)
-
-    return weekday_dic
-
-
-# Initialization
+# Constants
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-bot = commands.Bot(command_prefix="+")
+TEST_CHANNEL_ID = int(os.getenv('TEST_CHANNEL_ID'))
 DICE_LIMIT = 100
 
+# Global variables
+if_test = False
+
+# Handle command line arguments
+opts, args = getopt.getopt(sys.argv[1:], "t", [])
+for opt, arg in opts:
+    if opt == "-t":
+        if_test = True
+
+# Initialization
+bot = commands.Bot(command_prefix="+")
+
 # Read data
-characters = readData("character.json")
+characters = data.readWeeklyData("character.json")
 
 ###############
 # Bot Commands
@@ -55,6 +43,10 @@ async def hello_world(ctx):
 
 @bot.command(name='roll', help='Roll one (or more) dice')
 async def roll(ctx, number_of_dice: int = 1, number_of_sides: int = 6):
+    if (if_test and ctx.message.channel.id != TEST_CHANNEL_ID) or \
+            (not if_test and ctx.message.channel.id == TEST_CHANNEL_ID):
+        return
+
     if number_of_dice <= 0 or number_of_dice > DICE_LIMIT or number_of_sides > DICE_LIMIT:
         await ctx.send("{} 我:sunny:死你的:horse:，这数合不合理你自己没点逼数吗".format(
             ctx.message.author.mention))
@@ -86,6 +78,7 @@ async def work(ctx):
         response = "{} 今天要刷天赋的角色是： {}".format(ctx.message.author.mention,
                                               "，".join(characters_today))
     await ctx.send(response)
+
 
 @bot.event
 async def on_command_error(ctx, error):
