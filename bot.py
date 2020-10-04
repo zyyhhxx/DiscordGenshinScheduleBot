@@ -33,6 +33,7 @@ bot = commands.Bot(command_prefix=command_prefix)
 
 # Read data
 characters = data.readWeeklyData("character.json")
+weapons = data.readWeeklyData("weapon.json")
 
 ###############
 # Bot Commands
@@ -60,23 +61,35 @@ async def roll(ctx, number_of_dice: int = 1, number_of_sides: int = 6):
 
 
 @bot.command(name="work", help='Today\'s work')
-async def work(ctx):
-    # Get the correct weekday in game
-    chinaTimezone = pytz.timezone("Asia/Shanghai")
-    utc_now = pytz.utc.localize(datetime.datetime.utcnow())
-    date_timezone = utc_now.replace(tzinfo=pytz.utc).astimezone(chinaTimezone)
-    weekday_today = date_timezone.weekday()
-    if date_timezone.hour < 4:
-        weekday_today = (weekday_today - 1 + 7) % 7
+async def work(ctx, weekday: int = -1):
+    if weekday > 6 or weekday < -1:
+        await ctx.send("{} 我:sunny:死你的:horse:，一周有几天需要我教你吗？".format(ctx.message.author.mention))
+        return
+
+    # Get the correct weekday in game, if not specified by user
+    weekday_today = weekday
+    if weekday_today == -1:
+        chinaTimezone = pytz.timezone("Asia/Shanghai")
+        utc_now = pytz.utc.localize(datetime.datetime.utcnow())
+        date_timezone = utc_now.replace(tzinfo=pytz.utc).astimezone(chinaTimezone)
+        weekday_today = date_timezone.weekday()
+        if date_timezone.hour < 4:
+            weekday_today = (weekday_today - 1 + 7) % 7
 
     # Format response
     response = ""
     characters_today = characters[weekday_today]
-    if len(characters_today) <= 0:
+    weapons_today = weapons[weekday_today]
+    if len(characters_today) <= 0 and len(weapons_today) <= 0:
         response = "{} 今天刷个锤子".format(ctx.message.author.mention)
     else:
-        response = "{} 今天要刷天赋的角色是： {}".format(ctx.message.author.mention,
-                                              "，".join(characters_today))
+        responses = ["{}".format(ctx.message.author.mention)]
+        if len(characters_today) > 0:
+            responses.append("今天要刷天赋的角色是： {}".format("，".join(characters_today)))
+        if len(weapons_today) > 0:
+            responses.append("今天要刷材料的武器是： {}".format("，".join(weapons_today)))
+        response = " ".join(responses)
+        
     await ctx.send(response)
 
 
