@@ -12,7 +12,6 @@ from discord.ext import commands
 # Constants
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-TEST_CHANNEL_ID = int(os.getenv('TEST_CHANNEL_ID'))
 DICE_LIMIT = 100
 
 # Global variables
@@ -25,7 +24,12 @@ for opt, arg in opts:
         if_test = True
 
 # Initialization
-bot = commands.Bot(command_prefix="+")
+command_prefix = ""
+if if_test:
+    command_prefix = "="
+else:
+    command_prefix = "+"
+bot = commands.Bot(command_prefix=command_prefix)
 
 # Read data
 characters = data.readWeeklyData("character.json")
@@ -43,10 +47,6 @@ async def hello_world(ctx):
 
 @bot.command(name='roll', help='Roll one (or more) dice')
 async def roll(ctx, number_of_dice: int = 1, number_of_sides: int = 6):
-    if (if_test and ctx.message.channel.id != TEST_CHANNEL_ID) or \
-            (not if_test and ctx.message.channel.id == TEST_CHANNEL_ID):
-        return
-
     if number_of_dice <= 0 or number_of_dice > DICE_LIMIT or number_of_sides > DICE_LIMIT:
         await ctx.send("{} 我:sunny:死你的:horse:，这数合不合理你自己没点逼数吗".format(
             ctx.message.author.mention))
