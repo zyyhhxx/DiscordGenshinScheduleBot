@@ -99,7 +99,7 @@ async def work(ctx, weekday: int = -1):
 async def mine(ctx, cancel:bool=False):
     response = ""
     record = mine_db.get(str(ctx.message.author.id))
-    
+
     # Check if the user is requesting a cancellation
     if cancel:
         if record:
@@ -119,7 +119,7 @@ async def mine(ctx, cancel:bool=False):
         response = "{} 知道你今天挖矿了".format(ctx.message.author.mention)
         mine_db.set(str(ctx.message.author.id), str(datetime.now()))
         await ctx.send(response)
-        await asyncio.sleep(10)
+        await asyncio.sleep(259200)
 
         # Only notify when still available
         record = mine_db.get(str(ctx.message.author.id))
