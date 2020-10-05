@@ -1,11 +1,13 @@
 import os
 import discord
 import random
-import datetime
+from datetime import datetime
 import pytz
 import getopt
 import data
 import sys
+import asyncio
+import pickledb
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -34,6 +36,7 @@ bot = commands.Bot(command_prefix=command_prefix)
 # Read data
 characters = data.readWeeklyData("character.json")
 weapons = data.readWeeklyData("weapon.json")
+mine_db = pickledb.load('mine.db', True)
 
 ###############
 # Bot Commands
@@ -70,7 +73,7 @@ async def work(ctx, weekday: int = -1):
     weekday_today = weekday
     if weekday_today == -1:
         chinaTimezone = pytz.timezone("Asia/Shanghai")
-        utc_now = pytz.utc.localize(datetime.datetime.utcnow())
+        utc_now = pytz.utc.localize(datetime.utcnow())
         date_timezone = utc_now.replace(tzinfo=pytz.utc).astimezone(chinaTimezone)
         weekday_today = date_timezone.weekday()
         if date_timezone.hour < 4:
@@ -92,12 +95,45 @@ async def work(ctx, weekday: int = -1):
         
     await ctx.send(response)
 
+@bot.command(name="mine", help="Tell me you\'ve mined today! I\'ll notify you when it's ready again")
+async def mine(ctx, cancel:bool=False):
+    response = ""
+    record = mine_db.get(str(ctx.message.author.id))
+    
+    # Check if the user is requesting a cancellation
+    if cancel:
+        if record:
+            mine_db.rem(str(ctx.message.author.id))
+            response = "{} 已经取消了".format(ctx.message.author.mention)
+        else:
+            response = "{} 我:sunny:死你的:horse:，你说过挖矿吗".format(ctx.message.author.mention)
+        await ctx.send(response)
+        return
+
+    # Check if the user has already reported
+    if record:
+        response = "{} 我:sunny:死你的:horse:，你不是在{}说过了吗".format(ctx.message.author.mention,
+            record)
+        await ctx.send(response)
+    else:
+        response = "{} 知道你今天挖矿了".format(ctx.message.author.mention)
+        mine_db.set(str(ctx.message.author.id), str(datetime.now()))
+        await ctx.send(response)
+        await asyncio.sleep(10)
+
+        # Only notify when still available
+        record = mine_db.get(str(ctx.message.author.id))
+        if record:
+            response = "{} 又可以挖矿了".format(ctx.message.author.mention)
+            await ctx.send(response)
+            mine_db.rem(str(ctx.message.author.id))
+
 
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CommandNotFound):
         await ctx.send("{} 我:sunny:死你的:horse:，不会用别用".format(ctx.message.author.mention))
     else:
-        await ctx.send("{} 我:sunny:死你的:horse:，给我整晕了".format(ctx.message.author.mention))
+        await ctx.send("{} 我:sunny:死你的:horse:，给我整晕了: {}".format(ctx.message.author.mention, error))
 
 bot.run(TOKEN)
