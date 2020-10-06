@@ -134,6 +134,9 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CommandNotFound):
         await ctx.send("{} 我:sunny:死你的:horse:，不会用别用".format(ctx.message.author.mention))
     else:
-        await ctx.send("{} 我:sunny:死你的:horse:，给我整晕了: {}".format(ctx.message.author.mention, error))
+        if if_test:
+            await ctx.send("{} 我:sunny:死你的:horse:，给我整晕了: {}".format(ctx.message.author.mention, error))
+        else:
+            await ctx.send("{} 我:sunny:死你的:horse:，给我整晕了".format(ctx.message.author.mention))
 
 bot.run(TOKEN)
