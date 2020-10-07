@@ -35,6 +35,7 @@ MINE_NOTIFY_INTERVAL = args.mine_notify_interval
 TELL = "tell"
 CANCEL = "cancel"
 SELF = "self"
+LIST = "list"
 CURSE = "我:sunny:死你的:horse:"
 weekay_reprs = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
 
@@ -122,7 +123,7 @@ async def work(ctx, weekday: int = -1):
 @bot.command(name="mine", help="Tell me you\'ve mined today! I\'ll notify you when it's ready again")
 async def mine(ctx, sub_command: str = "tell", char_name: str = "self", notify_time: int = MINE_REFRESH_INTERVAL):
     # Decide if the arguments are valid
-    available_sub_commands = [TELL, CANCEL]
+    available_sub_commands = [TELL, CANCEL, LIST]
     if sub_command not in available_sub_commands:
         raise commands.errors.CommandNotFound
 
@@ -177,6 +178,46 @@ async def mine(ctx, sub_command: str = "tell", char_name: str = "self", notify_t
             mine_db.ladd(key, str(ctx.message.channel.id))
             mine_db.ladd(key, str(datetime.now()))
             await ctx.send(response)
+
+    elif sub_command == LIST:
+        response = "没人挖过矿"
+
+        keys = list(mine_db.getall())
+        if len(keys) > 0:
+            response = "挖矿日程"
+            for key in keys:
+                if mine_db.exists(key):
+                    # Get necessary information
+                    user_id, char_name = key.split(".")
+                    channel_id, datetime_string = mine_db.lgetall(key)
+                    channel = bot.get_channel(int(channel_id))
+                    guild = channel.guild
+                    member = guild.get_member(int(user_id))
+
+                    # Only proceed when both channel and user are available
+                    if member:
+                        # Calculate delta time
+                        current_datetime = datetime.now()
+                        start_datetime = datetime.strptime(
+                            datetime_string, "%Y-%m-%d %H:%M:%S.%f")
+                        delta_datetime = current_datetime - start_datetime
+                        total_seconds = delta_datetime.total_seconds()
+                        mins = (total_seconds // 60) % 60
+                        hours = (total_seconds // 3600) % 24
+                        days = total_seconds // 86400
+                        time_repr = "{}分钟".format(int(mins))
+                        if hours > 0:
+                            time_repr = "{}小时".format(int(hours)) + time_repr
+                        if days > 0:
+                            time_repr = "{}天".format(int(days)) + time_repr
+
+                        # Append
+                        char_repr = ""
+                        if char_name != SELF:
+                            char_repr = "-"+char_name
+                        response += "\n{}{}：{}前".format(
+                            member.nick, char_repr, time_repr)
+        await ctx.send(response)
 
 
 @tasks.loop(seconds=MINE_NOTIFY_INTERVAL)
