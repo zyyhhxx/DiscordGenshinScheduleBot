@@ -189,34 +189,37 @@ async def mine(ctx, sub_command: str = "tell", char_name: str = "self", notify_t
                 if mine_db.exists(key):
                     # Get necessary information
                     user_id, char_name = key.split(".")
+                    user = bot.get_user(int(user_id))
+                    display_name = user.display_name
                     channel_id, datetime_string = mine_db.lgetall(key)
                     channel = bot.get_channel(int(channel_id))
-                    guild = channel.guild
-                    member = guild.get_member(int(user_id))
+                    if type(channel) != discord.DMChannel:
+                        guild = channel.guild
+                        if guild:
+                            member = guild.get_member(int(user_id))
+                            display_name = member.nick
 
-                    # Only proceed when both channel and user are available
-                    if member:
-                        # Calculate delta time
-                        current_datetime = datetime.now()
-                        start_datetime = datetime.strptime(
-                            datetime_string, "%Y-%m-%d %H:%M:%S.%f")
-                        delta_datetime = current_datetime - start_datetime
-                        total_seconds = delta_datetime.total_seconds()
-                        mins = (total_seconds // 60) % 60
-                        hours = (total_seconds // 3600) % 24
-                        days = total_seconds // 86400
-                        time_repr = "{}分钟".format(int(mins))
-                        if hours > 0:
-                            time_repr = "{}小时".format(int(hours)) + time_repr
-                        if days > 0:
-                            time_repr = "{}天".format(int(days)) + time_repr
+                    # Calculate delta time
+                    current_datetime = datetime.now()
+                    start_datetime = datetime.strptime(
+                        datetime_string, "%Y-%m-%d %H:%M:%S.%f")
+                    delta_datetime = current_datetime - start_datetime
+                    total_seconds = delta_datetime.total_seconds()
+                    mins = (total_seconds // 60) % 60
+                    hours = (total_seconds // 3600) % 24
+                    days = total_seconds // 86400
+                    time_repr = "{}分钟".format(int(mins))
+                    if hours > 0:
+                        time_repr = "{}小时".format(int(hours)) + time_repr
+                    if days > 0:
+                        time_repr = "{}天".format(int(days)) + time_repr
 
-                        # Append
-                        char_repr = ""
-                        if char_name != SELF:
-                            char_repr = "-"+char_name
-                        response += "\n{}{}：{}前".format(
-                            member.nick, char_repr, time_repr)
+                    # Append
+                    char_repr = ""
+                    if char_name != SELF:
+                        char_repr = "-"+char_name
+                    response += "\n{}{}：{}前".format(
+                        display_name, char_repr, time_repr)
         await ctx.send(response)
 
 
