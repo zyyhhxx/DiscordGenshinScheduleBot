@@ -22,7 +22,7 @@ parser.add_argument('-t', '--test', dest='test',
 parser.add_argument('-m', '--mine', dest='mine', nargs='?',
                     type=int, const=DEFAULT_MINE_REFRESH_INTERVAL, default=DEFAULT_MINE_REFRESH_INTERVAL, help="mine refresh interval in seconds")
 parser.add_argument('-n', '--notify', dest='mine_notify_interval', nargs='?',
-                    type=int, const=DEFAULT_MINE_NOTIFY_INTERVAL,default=DEFAULT_MINE_NOTIFY_INTERVAL, help="mine notify interval in seconds")
+                    type=int, const=DEFAULT_MINE_NOTIFY_INTERVAL, default=DEFAULT_MINE_NOTIFY_INTERVAL, help="mine notify interval in seconds")
 args = parser.parse_args()
 
 # Constants
@@ -90,7 +90,9 @@ async def work(ctx, weekday: int = -1):
 
     # Get the correct weekday in game, if not specified by user
     weekday_today = weekday
+    today = ""
     if weekday_today == -1:
+        today = "（今天）"
         chinaTimezone = pytz.timezone("Asia/Shanghai")
         utc_now = pytz.utc.localize(datetime.utcnow())
         date_timezone = utc_now.replace(
@@ -104,15 +106,15 @@ async def work(ctx, weekday: int = -1):
     characters_today = characters[weekday_today]
     weapons_today = weapons[weekday_today]
     if len(characters_today) <= 0 and len(weapons_today) <= 0:
-        response = "{} {}刷个锤子".format(
-            ctx.message.author.mention, weekay_reprs[weekday_today])
+        response = "{} {}{}刷个锤子".format(
+            ctx.message.author.mention, weekay_reprs[weekday_today], today)
     else:
-        response = "{} {}".format(
-            ctx.message.author.mention, weekay_reprs[weekday_today])
+        response = "{} {}{}".format(
+            ctx.message.author.mention, weekay_reprs[weekday_today], today)
         if len(characters_today) > 0:
-            response += " 要刷天赋的角色是： {}".format("，".join(characters_today))
+            response += "要刷天赋的角色是：{}。".format("，".join(characters_today))
         if len(weapons_today) > 0:
-            response += " 要刷材料的武器是： {}".format("，".join(weapons_today))
+            response += "要刷材料的武器是：{}。".format("，".join(weapons_today))
 
     await ctx.send(response)
 
@@ -156,11 +158,11 @@ async def mine(ctx, sub_command: str = "tell", char_name: str = "self", notify_t
             mins = (total_seconds // 60) % 60
             hours = (total_seconds // 3600) % 24
             days = total_seconds // 86400
-            time_repr = "{}分钟".format(mins)
+            time_repr = "{}分钟".format(int(mins))
             if hours > 0:
-                time_repr = "{}小时".format(hours) + time_repr
+                time_repr = "{}小时".format(int(hours)) + time_repr
             if days > 0:
-                time_repr = "{}天".format(days) + time_repr
+                time_repr = "{}天".format(int(days)) + time_repr
 
             response = "{} {}，你不是在{}前说过{}挖矿了吗".format(
                 ctx.message.author.mention, CURSE, time_repr, char_repr)
