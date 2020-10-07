@@ -11,14 +11,18 @@ import pickledb
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
 
+# Predefined constants
+DEFAULT_MINE_REFRESH_INTERVAL = 259200
+DEFAULT_MINE_NOTIFY_INTERVAL = 1800
+
 # Handle command line arguments
 parser = argparse.ArgumentParser(description="Discord bot for Genshin")
 parser.add_argument('-t', '--test', dest='test',
                     action='store_true', help="test mode")
 parser.add_argument('-m', '--mine', dest='mine', nargs='?',
-                    type=int, const=259200, help="mine refresh interval in seconds")
+                    type=int, const=DEFAULT_MINE_REFRESH_INTERVAL, default=DEFAULT_MINE_REFRESH_INTERVAL, help="mine refresh interval in seconds")
 parser.add_argument('-n', '--notify', dest='mine_notify_interval', nargs='?',
-                    type=int, const=1800, help="mine notify interval in seconds")
+                    type=int, const=DEFAULT_MINE_NOTIFY_INTERVAL,default=DEFAULT_MINE_NOTIFY_INTERVAL, help="mine notify interval in seconds")
 args = parser.parse_args()
 
 # Constants
@@ -142,9 +146,24 @@ async def mine(ctx, sub_command: str = "tell", char_name: str = "self", notify_t
     elif sub_command == TELL:
         # Check if the user has already reported
         if record:
+            # Calculate delta time
             _, record_time = record
+            current_datetime = datetime.now()
+            start_datetime = datetime.strptime(
+                record_time, "%Y-%m-%d %H:%M:%S.%f")
+            delta_datetime = current_datetime - start_datetime
+            total_seconds = delta_datetime.total_seconds()
+            mins = (total_seconds // 60) % 60
+            hours = (total_seconds // 3600) % 24
+            days = total_seconds // 86400
+            time_repr = "{}分钟".format(mins)
+            if hours > 0:
+                time_repr = "{}小时".format(hours) + time_repr
+            if days > 0:
+                time_repr = "{}天".format(days) + time_repr
+
             response = "{} {}，你不是在{}前说过{}挖矿了吗".format(
-                ctx.message.author.mention, CURSE, record_time, char_repr)
+                ctx.message.author.mention, CURSE, time_repr, char_repr)
             await ctx.send(response)
         else:
             # Add a new entry
