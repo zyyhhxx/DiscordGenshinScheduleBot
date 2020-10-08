@@ -204,7 +204,7 @@ async def mine(ctx, sub_command: str = "tell", char_name: str = "self", notify_t
                     start_datetime = datetime.strptime(
                         datetime_string, "%Y-%m-%d %H:%M:%S.%f")
                     delta_datetime = current_datetime - start_datetime
-                    total_seconds = delta_datetime.total_seconds()
+                    total_seconds = MINE_REFRESH_INTERVAL - delta_datetime.total_seconds()
                     mins = (total_seconds // 60) % 60
                     hours = (total_seconds // 3600) % 24
                     days = total_seconds // 86400
@@ -218,7 +218,7 @@ async def mine(ctx, sub_command: str = "tell", char_name: str = "self", notify_t
                     char_repr = ""
                     if char_name != SELF:
                         char_repr = "-"+char_name
-                    response += "\n{}{}：{}前".format(
+                    response += "\n{}{}：还剩{}".format(
                         display_name, char_repr, time_repr)
         await ctx.send(response)
 
@@ -253,6 +253,8 @@ async def mine_notify():
                     char_repr = char_name
                 response = "{} {}又可以挖矿了".format(user.mention, char_repr)
                 await channel.send(response)
+                mine_db.lremlist(key)
+            else:
                 mine_db.lremlist(key)
 
 
