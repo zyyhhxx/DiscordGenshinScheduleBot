@@ -1,0 +1,482 @@
+{
+  "amos'_bow": {
+    "ascension_material": "",
+    "rarity": 5,
+    "type": "bow"
+  },
+  "skyward_harp": {
+    "ascension_material": "",
+    "rarity": 5,
+    "type": "bow"
+  },
+  "alley_hunter": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "bow"
+  },
+  "the_stringless": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "bow"
+  },
+  "sacrificial_bow": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "bow"
+  },
+  "rust": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "bow"
+  },
+  "royal_bow": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "bow"
+  },
+  "the_viridescent_hunt": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "bow"
+  },
+  "prototype_crescent": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "bow"
+  },
+  "favonius_warbow": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "bow"
+  },
+  "compound_bow": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "bow"
+  },
+  "blackcliff_warbow": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "bow"
+  },
+  "raven_bow": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "bow"
+  },
+  "messenger": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "bow"
+  },
+  "ebony_bow": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "bow"
+  },
+  "sharpshooter's_oath": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "bow"
+  },
+  "slingshot": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "bow"
+  },
+  "recurve_bow": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "bow"
+  },
+  "seasoned_hunter's_bow": {
+    "ascension_material": "",
+    "rarity": 2,
+    "type": "bow"
+  },
+  "hunter's_bow": {
+    "ascension_material": "",
+    "rarity": 1,
+    "type": "bow"
+  },
+  "lost_prayer_to_the_sacred_winds": {
+    "ascension_material": "",
+    "rarity": 5,
+    "type": "catalyst"
+  },
+  "skyward_atlas": {
+    "ascension_material": "",
+    "rarity": 5,
+    "type": "catalyst"
+  },
+  "wine_and_song": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "catalyst"
+  },
+  "blackcliff_amulet": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "catalyst"
+  },
+  "eye_of_perception": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "catalyst"
+  },
+  "favonius_codex": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "catalyst"
+  },
+  "mappa_mare": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "catalyst"
+  },
+  "the_widsith": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "catalyst"
+  },
+  "solar_pearl": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "catalyst"
+  },
+  "prototype_malice": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "catalyst"
+  },
+  "royal_grimoire": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "catalyst"
+  },
+  "sacrificial_fragments": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "catalyst"
+  },
+  "twin_nephrite": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "catalyst"
+  },
+  "thrilling_tales_of_dragon_slayers": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "catalyst"
+  },
+  "amber_catalyst": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "catalyst"
+  },
+  "magic_guide": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "catalyst"
+  },
+  "otherworldly_story": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "catalyst"
+  },
+  "emerald_orb": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "catalyst"
+  },
+  "pocket_grimoire": {
+    "ascension_material": "",
+    "rarity": 2,
+    "type": "catalyst"
+  },
+  "apprentice's_notes": {
+    "ascension_material": "",
+    "rarity": 1,
+    "type": "catalyst"
+  },
+  "wolf's_gravestone": {
+    "ascension_material": "",
+    "rarity": 5,
+    "type": "claymore"
+  },
+  "skyward_pride": {
+    "ascension_material": "",
+    "rarity": 5,
+    "type": "claymore"
+  },
+  "rainslasher": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "claymore"
+  },
+  "whiteblind": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "claymore"
+  },
+  "the_bell": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "claymore"
+  },
+  "serpent_spine": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "claymore"
+  },
+  "sacrificial_greatsword": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "claymore"
+  },
+  "blackcliff_slasher": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "claymore"
+  },
+  "prototype_aminus": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "claymore"
+  },
+  "lithic_blade": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "claymore"
+  },
+  "favonius_greatsword": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "claymore"
+  },
+  "royal_greatsword": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "claymore"
+  },
+  "quartz": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "claymore"
+  },
+  "bloodtainted_greatsword": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "claymore"
+  },
+  "skyrider_greatsword": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "claymore"
+  },
+  "ferrous_shadow": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "claymore"
+  },
+  "white_iron_greatsword": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "claymore"
+  },
+  "debate_club": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "claymore"
+  },
+  "old_merc's_pal": {
+    "ascension_material": "",
+    "rarity": 2,
+    "type": "claymore"
+  },
+  "waster_greatsword": {
+    "ascension_material": "",
+    "rarity": 1,
+    "type": "claymore"
+  },
+  "skyward_blade": {
+    "ascension_material": "",
+    "rarity": 5,
+    "type": "sword"
+  },
+  "aquila_favonia": {
+    "ascension_material": "",
+    "rarity": 5,
+    "type": "sword"
+  },
+  "blackcliff_longsword": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "sword"
+  },
+  "the_flute": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "sword"
+  },
+  "the_black_sword": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "sword"
+  },
+  "the_alley_flash": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "sword"
+  },
+  "sword_of_descension": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "sword"
+  },
+  "sacrificial_sword": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "sword"
+  },
+  "royal_longsword": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "sword"
+  },
+  "prototype_rancour": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "sword"
+  },
+  "lion's_roar": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "sword"
+  },
+  "iron_sting": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "sword"
+  },
+  "favonius_sword": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "sword"
+  },
+  "harbinger_of_dawn": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "sword"
+  },
+  "skyrider_sword": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "sword"
+  },
+  "fillet_blade": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "sword"
+  },
+  "dark_iron_sword": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "sword"
+  },
+  "cool_steel": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "sword"
+  },
+  "traveler's_handy_sword": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "sword"
+  },
+  "silver_sword": {
+    "ascension_material": "",
+    "rarity": 2,
+    "type": "sword"
+  },
+  "dull_blade": {
+    "ascension_material": "",
+    "rarity": 1,
+    "type": "sword"
+  },
+  "kunwu's_iris_rift": {
+    "ascension_material": "",
+    "rarity": 5,
+    "type": "polearm"
+  },
+  "primordial_jade_winged-spear": {
+    "ascension_material": "",
+    "rarity": 5,
+    "type": "polearm"
+  },
+  "skyward_spine": {
+    "ascension_material": "",
+    "rarity": 5,
+    "type": "polearm"
+  },
+  "blackcliff_pole": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "polearm"
+  },
+  "crescent_pike": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "polearm"
+  },
+  "deathmatch": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "polearm"
+  },
+  "dragon's_bane": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "polearm"
+  },
+  "favonius_lance": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "polearm"
+  },
+  "lithic_spear": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "polearm"
+  },
+  "prototype_grudge": {
+    "ascension_material": "",
+    "rarity": 4,
+    "type": "polearm"
+  },
+  "black_tassel": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "polearm"
+  },
+  "halberd": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "polearm"
+  },
+  "white_tassel": {
+    "ascension_material": "",
+    "rarity": 3,
+    "type": "polearm"
+  },
+  "iron_point": {
+    "ascension_material": "",
+    "rarity": 2,
+    "type": "polearm"
+  },
+  "beginner's_protector": {
+    "ascension_material": "",
+    "rarity": 1,
+    "type": "polearm"
+  }
+}

@@ -1,6 +1,13 @@
 import json
+import pickledb
+
+weapons = pickledb.load('weapons.db', False)
+characters = pickledb.load('characters.db', False)
+word_keys = pickledb.load('word_keys.db', False)
 
 # Read JSON data as a dictionary
+
+
 def readWeeklyData(file: str):
     # Read file
     f = open(file, "r")
@@ -18,3 +25,11 @@ def readWeeklyData(file: str):
             weekday_dic[weekday-1].append(character)
 
     return weekday_dic
+
+
+def get_rarity(key: str):
+    if key in characters.getall():
+        return characters.get(key)["rarity"]
+    if key in weapons.getall():
+        return weapons.get(key)["rarity"]
+    return 0

@@ -1,0 +1,74 @@
+{
+  "freedom": {
+    "days": [
+      1,
+      4
+    ]
+  },
+  "resistance": {
+    "days": [
+      2,
+      5
+    ]
+  },
+  "ballad": {
+    "days": [
+      3,
+      6
+    ]
+  },
+  "prosperity": {
+    "days": [
+      1,
+      4
+    ]
+  },
+  "diligence": {
+    "days": [
+      2,
+      5
+    ]
+  },
+  "gold": {
+    "days": [
+      3,
+      6
+    ]
+  },
+  "tile": {
+    "days": [
+      1,
+      4
+    ]
+  },
+  "tooth": {
+    "days": [
+      2,
+      5
+    ]
+  },
+  "fetters": {
+    "days": [
+      3,
+      6
+    ]
+  },
+  "sands": {
+    "days": [
+      1,
+      4
+    ]
+  },
+  "elixir": {
+    "days": [
+      2,
+      5
+    ]
+  },
+  "aerosiderite": {
+    "days": [
+      3,
+      6
+    ]
+  }
+}

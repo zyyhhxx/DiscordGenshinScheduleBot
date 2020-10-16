@@ -1,0 +1,86 @@
+{
+  "keqing": {
+    "rarity": 5,
+    "talent_material": "prosperity"
+  },
+  "jean": {
+    "rarity": 5,
+    "talent_material": "resistance"
+  },
+  "diluc": {
+    "rarity": 5,
+    "talent_material": "resistance"
+  },
+  "qiqi": {
+    "rarity": 5,
+    "talent_material": "prosperity"
+  },
+  "mona": {
+    "rarity": 5,
+    "talent_material": "resistance"
+  },
+  "traveler": {
+    "rarity": 5,
+    "talent_material": "freedom"
+  },
+  "venti": {
+    "rarity": 5,
+    "talent_material": "ballad"
+  },
+  "lisa": {
+    "rarity": 4,
+    "talent_material": "ballad"
+  },
+  "ningguang": {
+    "rarity": 4,
+    "talent_material": "prosperity"
+  },
+  "noelle": {
+    "rarity": 4,
+    "talent_material": "resistance"
+  },
+  "kaeya": {
+    "rarity": 4,
+    "talent_material": "ballad"
+  },
+  "fischl": {
+    "rarity": 4,
+    "talent_material": "ballad"
+  },
+  "chongyun": {
+    "rarity": 4,
+    "talent_material": "diligence"
+  },
+  "bennett": {
+    "rarity": 4,
+    "talent_material": "resistance"
+  },
+  "beidou": {
+    "rarity": 4,
+    "talent_material": "gold"
+  },
+  "barbara": {
+    "rarity": 4,
+    "talent_material": "freedom"
+  },
+  "amber": {
+    "rarity": 4,
+    "talent_material": "freedom"
+  },
+  "xingqiu": {
+    "rarity": 4,
+    "talent_material": "gold"
+  },
+  "xiangling": {
+    "rarity": 4,
+    "talent_material": "diligence"
+  },
+  "razor": {
+    "rarity": 4,
+    "talent_material": "resistance"
+  },
+  "sucrose": {
+    "rarity": 4,
+    "talent_material": "freedom"
+  }
+}

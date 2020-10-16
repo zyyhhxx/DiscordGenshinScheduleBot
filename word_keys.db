@@ -1,0 +1,474 @@
+{
+  "weapons": {
+    "amos'_bow": {
+      "zh_s": "阿莫斯之弓",
+      "en": "Amos' Bow"
+    },
+    "skyward_harp": {
+      "zh_s": "天空之翼",
+      "en": "Skyward Harp"
+    },
+    "alley_hunter": {
+      "zh_s": "",
+      "en": "Alley Hunter"
+    },
+    "the_stringless": {
+      "zh_s": "绝弦",
+      "en": "The Stringless"
+    },
+    "sacrificial_bow": {
+      "zh_s": "祭礼弓",
+      "en": "Sacrificial Bow"
+    },
+    "rust": {
+      "zh_s": "弓藏",
+      "en": "Rust"
+    },
+    "royal_bow": {
+      "zh_s": "宗室长弓",
+      "en": "Royal Bow"
+    },
+    "the_viridescent_hunt": {
+      "zh_s": "苍翠猎弓",
+      "en": "The Viridescent Hunt"
+    },
+    "prototype_crescent": {
+      "zh_s": "试作澹月",
+      "en": "Prototype Crescent"
+    },
+    "favonius_warbow": {
+      "zh_s": "西风猎弓",
+      "en": "Favonius Warbow"
+    },
+    "compound_bow": {
+      "zh_s": "钢轮弓",
+      "en": "Compound Bow"
+    },
+    "blackcliff_warbow": {
+      "zh_s": "",
+      "en": "Blackcliff Warbow"
+    },
+    "raven_bow": {
+      "zh_s": "鸦羽弓",
+      "en": "Raven Bow"
+    },
+    "messenger": {
+      "zh_s": "信使",
+      "en": "Messenger"
+    },
+    "ebony_bow": {
+      "zh_s": "黑檀弓",
+      "en": "Ebony Bow"
+    },
+    "sharpshooter's_oath": {
+      "zh_s": "神射手之誓",
+      "en": "Sharpshooter's Oath"
+    },
+    "slingshot": {
+      "zh_s": "弹弓",
+      "en": "Slingshot"
+    },
+    "recurve_bow": {
+      "zh_s": "反曲弓",
+      "en": "Recurve Bow"
+    },
+    "seasoned_hunter's_bow": {
+      "zh_s": "历练的猎弓",
+      "en": "Seasoned Hunter's Bow"
+    },
+    "hunter's_bow": {
+      "zh_s": "猎弓",
+      "en": "Hunter's Bow"
+    },
+    "wolf's_gravestone": {
+      "zh_s": "狼的末路",
+      "en": "Wolf's Gravestone"
+    },
+    "skyward_pride": {
+      "zh_s": "天空之傲",
+      "en": "Skyward Pride"
+    },
+    "rainslasher": {
+      "zh_s": "雨裁",
+      "en": "Rainslasher"
+    },
+    "whiteblind": {
+      "zh_s": "白影剑",
+      "en": "Whiteblind"
+    },
+    "the_bell": {
+      "zh_s": "钟剑",
+      "en": "The Bell"
+    },
+    "serpent_spine": {
+      "zh_s": "螭骨剑",
+      "en": "Serpent Spine"
+    },
+    "sacrificial_greatsword": {
+      "zh_s": "祭礼大剑",
+      "en": "Sacrificial Greatsword"
+    },
+    "blackcliff_slasher": {
+      "zh_s": "",
+      "en": "Blackcliff Slasher"
+    },
+    "prototype_aminus": {
+      "zh_s": "试作古华",
+      "en": "Prototype Aminus"
+    },
+    "lithic_blade": {
+      "zh_s": "",
+      "en": "Lithic Blade"
+    },
+    "favonius_greatsword": {
+      "zh_s": "西风大剑",
+      "en": "Favonius Greatsword"
+    },
+    "royal_greatsword": {
+      "zh_s": "宗室大剑",
+      "en": "Royal Greatsword"
+    },
+    "quartz": {
+      "zh_s": "",
+      "en": "Quartz"
+    },
+    "bloodtainted_greatsword": {
+      "zh_s": "沐浴龙血的剑",
+      "en": "Bloodtainted Greatsword"
+    },
+    "skyrider_greatsword": {
+      "zh_s": "飞天大御剑",
+      "en": "Skyrider Greatsword"
+    },
+    "ferrous_shadow": {
+      "zh_s": "铁影阔剑",
+      "en": "Ferrous Shadow"
+    },
+    "white_iron_greatsword": {
+      "zh_s": "白铁大剑",
+      "en": "White Iron Greatsword"
+    },
+    "debate_club": {
+      "zh_s": "以理服人",
+      "en": "Debate Club"
+    },
+    "old_merc's_pal": {
+      "zh_s": "佣兵重剑",
+      "en": "Old Merc's Pal"
+    },
+    "waster_greatsword": {
+      "zh_s": "训练大剑",
+      "en": "Waster Greatsword"
+    },
+    "lost_prayer_to_the_sacred_winds": {
+      "zh_s": "四风原典",
+      "en": "Lost Prayer to the Sacred Winds"
+    },
+    "skyward_atlas": {
+      "zh_s": "天空之卷",
+      "en": "Skyward Atlas"
+    },
+    "wine_and_song": {
+      "zh_s": "",
+      "en": "Wine and Song"
+    },
+    "blackcliff_amulet": {
+      "zh_s": "黑岩绯玉",
+      "en": "Blackcliff Amulet"
+    },
+    "eye_of_perception": {
+      "zh_s": "昭心",
+      "en": "Eye of Perception"
+    },
+    "favonius_codex": {
+      "zh_s": "西风秘典",
+      "en": "Favonius Codex"
+    },
+    "mappa_mare": {
+      "zh_s": "万国诸海图谱",
+      "en": "Mappa Mare"
+    },
+    "the_widsith": {
+      "zh_s": "流浪乐章",
+      "en": "The Widsith"
+    },
+    "solar_pearl": {
+      "zh_s": "匣里日月",
+      "en": "Solar Pearl"
+    },
+    "prototype_malice": {
+      "zh_s": "试作金珀",
+      "en": "Prototype Malice"
+    },
+    "royal_grimoire": {
+      "zh_s": "宗室秘法录",
+      "en": "Royal Grimoire"
+    },
+    "sacrificial_fragments": {
+      "zh_s": "祭礼残章",
+      "en": "Sacrificial Fragments"
+    },
+    "twin_nephrite": {
+      "zh_s": "甲级宝珏",
+      "en": "Twin Nephrite"
+    },
+    "thrilling_tales_of_dragon_slayers": {
+      "zh_s": "讨龙英杰谭",
+      "en": "Thrilling Tales of Dragon Slayers"
+    },
+    "amber_catalyst": {
+      "zh_s": "",
+      "en": "Amber Catalyst"
+    },
+    "magic_guide": {
+      "zh_s": "魔导绪论",
+      "en": "Magic Guide"
+    },
+    "otherworldly_story": {
+      "zh_s": "异世界行记",
+      "en": "Otherworldly Story"
+    },
+    "emerald_orb": {
+      "zh_s": "翡玉法球",
+      "en": "Emerald Orb"
+    },
+    "pocket_grimoire": {
+      "zh_s": "口袋魔导书",
+      "en": "Pocket Grimoire"
+    },
+    "apprentice's_notes": {
+      "zh_s": "学徒笔记",
+      "en": "Apprentice's Notes"
+    },
+    "kunwu's_iris_rift": {
+      "zh_s": "昆吾断虹",
+      "en": "Kunwu's Iris Rift"
+    },
+    "primordial_jade_winged-spear": {
+      "zh_s": "和璞鸢",
+      "en": "Primordial Jade Winged-Spear"
+    },
+    "skyward_spine": {
+      "zh_s": "天空之脊",
+      "en": "Skyward Spine"
+    },
+    "blackcliff_pole": {
+      "zh_s": "黑岩刺枪",
+      "en": "Blackcliff Pole"
+    },
+    "crescent_pike": {
+      "zh_s": "流月针",
+      "en": "Crescent Pike"
+    },
+    "deathmatch": {
+      "zh_s": "决斗之枪",
+      "en": "Deathmatch"
+    },
+    "dragon's_bane": {
+      "zh_s": "匣里灭辰",
+      "en": "Dragon's Bane"
+    },
+    "favonius_lance": {
+      "zh_s": "西风长枪",
+      "en": "Favonius Lance"
+    },
+    "lithic_spear": {
+      "zh_s": "",
+      "en": "Lithic Spear"
+    },
+    "prototype_grudge": {
+      "zh_s": "试作星镰",
+      "en": "Prototype Grudge"
+    },
+    "black_tassel": {
+      "zh_s": "黑缨枪",
+      "en": "Black Tassel"
+    },
+    "halberd": {
+      "zh_s": "钺矛",
+      "en": "Halberd"
+    },
+    "white_tassel": {
+      "zh_s": "白缨枪",
+      "en": "White Tassel"
+    },
+    "iron_point": {
+      "zh_s": "铁尖枪",
+      "en": "Iron Point"
+    },
+    "beginner's_protector": {
+      "zh_s": "新手长枪",
+      "en": "Beginner's Protector"
+    },
+    "skyward_blade": {
+      "zh_s": "天空之刃",
+      "en": "Skyward Blade"
+    },
+    "aquila_favonia": {
+      "zh_s": "风鹰剑",
+      "en": "Aquila Favonia"
+    },
+    "blackcliff_longsword": {
+      "zh_s": "黑岩长剑",
+      "en": "Blackcliff Longsword"
+    },
+    "the_flute": {
+      "zh_s": "笛剑",
+      "en": "The Flute"
+    },
+    "the_black_sword": {
+      "zh_s": "黑剑",
+      "en": "The Black Sword"
+    },
+    "the_alley_flash": {
+      "zh_s": "暗巷闪光",
+      "en": "The Alley Flash"
+    },
+    "sword_of_descension": {
+      "zh_s": "降临之剑",
+      "en": "Sword of Descension"
+    },
+    "sacrificial_sword": {
+      "zh_s": "祭礼剑",
+      "en": "Sacrificial Sword"
+    },
+    "royal_longsword": {
+      "zh_s": "宗室长剑",
+      "en": "Royal Longsword"
+    },
+    "prototype_rancour": {
+      "zh_s": "试作斩岩",
+      "en": "Prototype Rancour"
+    },
+    "lion's_roar": {
+      "zh_s": "匣里龙吟",
+      "en": "Lion's Roar"
+    },
+    "iron_sting": {
+      "zh_s": "铁蜂刺",
+      "en": "Iron Sting"
+    },
+    "favonius_sword": {
+      "zh_s": "西风剑",
+      "en": "Favonius Sword"
+    },
+    "harbinger_of_dawn": {
+      "zh_s": "黎明神剑",
+      "en": "Harbinger of Dawn"
+    },
+    "skyrider_sword": {
+      "zh_s": "飞天御剑",
+      "en": "Skyrider Sword"
+    },
+    "fillet_blade": {
+      "zh_s": "吃虎鱼刀",
+      "en": "Fillet Blade"
+    },
+    "dark_iron_sword": {
+      "zh_s": "暗铁剑",
+      "en": "Dark Iron Sword"
+    },
+    "cool_steel": {
+      "zh_s": "冷刃",
+      "en": "Cool Steel"
+    },
+    "traveler's_handy_sword": {
+      "zh_s": "旅行剑",
+      "en": "Traveler's Handy Sword"
+    },
+    "silver_sword": {
+      "zh_s": "银剑",
+      "en": "Silver Sword"
+    },
+    "dull_blade": {
+      "zh_s": "无锋剑",
+      "en": "Dull Blade"
+    }
+  },
+  "characters": {
+    "keqing": {
+      "zh_s": "刻晴",
+      "en": "Keqing"
+    },
+    "jean": {
+      "zh_s": "琴",
+      "en": "Jean"
+    },
+    "diluc": {
+      "zh_s": "迪卢克",
+      "en": "Diluc"
+    },
+    "qiqi": {
+      "zh_s": "七七",
+      "en": "Qiqi"
+    },
+    "mona": {
+      "zh_s": "莫娜",
+      "en": "Mona"
+    },
+    "traveler": {
+      "zh_s": "旅行者",
+      "en": "Traveler"
+    },
+    "venti": {
+      "zh_s": "温迪",
+      "en": "Venti"
+    },
+    "lisa": {
+      "zh_s": "丽莎",
+      "en": "Lisa"
+    },
+    "ningguang": {
+      "zh_s": "凝光",
+      "en": "Ningguang"
+    },
+    "noelle": {
+      "zh_s": "诺埃尔",
+      "en": "Noelle"
+    },
+    "kaeya": {
+      "zh_s": "凯亚",
+      "en": "Kaeya"
+    },
+    "fischl": {
+      "zh_s": "菲谢尔",
+      "en": "Fischl"
+    },
+    "chongyun": {
+      "zh_s": "重云",
+      "en": "Chongyun"
+    },
+    "bennett": {
+      "zh_s": "班尼特",
+      "en": "Bennett"
+    },
+    "beidou": {
+      "zh_s": "北斗",
+      "en": "Beidou"
+    },
+    "barbara": {
+      "zh_s": "芭芭拉",
+      "en": "Barbara"
+    },
+    "amber": {
+      "zh_s": "安柏",
+      "en": "Amber"
+    },
+    "xingqiu": {
+      "zh_s": "行秋",
+      "en": "Xingqiu"
+    },
+    "xiangling": {
+      "zh_s": "香菱",
+      "en": "Xiangling"
+    },
+    "razor": {
+      "zh_s": "雷泽",
+      "en": "Razor"
+    },
+    "sucrose": {
+      "zh_s": "砂糖",
+      "en": "Sucrose"
+    }
+  }
+}

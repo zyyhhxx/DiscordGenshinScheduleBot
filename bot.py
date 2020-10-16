@@ -4,16 +4,20 @@ import random
 import argparse
 from datetime import datetime
 import pytz
-import data
 import sys
 import asyncio
 import pickledb
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
 
+import gacha
+import data
+import language
+
 # Predefined constants
 DEFAULT_MINE_REFRESH_INTERVAL = 259200
 DEFAULT_MINE_NOTIFY_INTERVAL = 1800
+LANGUAGE = "zh_s"
 
 # Handle command line arguments
 parser = argparse.ArgumentParser(description="Discord bot for Genshin")
@@ -36,6 +40,9 @@ TELL = "tell"
 CANCEL = "cancel"
 SELF = "self"
 LIST = "list"
+PULL = "pull"
+STATS = "stats"
+RESET = "reset"
 CURSE = "我:sunny:死你的:horse:"
 weekay_reprs = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
 
@@ -57,6 +64,7 @@ bot = commands.Bot(command_prefix=command_prefix, intents=intents)
 characters = data.readWeeklyData("character.json")
 weapons = data.readWeeklyData("weapon.json")
 mine_db = pickledb.load('mine.db', True)
+gacha_db = pickledb.load('gacha.db', True)
 
 ###############
 # Bot Commands
@@ -121,7 +129,7 @@ async def work(ctx, weekday: int = -1):
 
 
 @bot.command(name="mine", help="Tell me you\'ve mined today! I\'ll notify you when it's ready again")
-async def mine(ctx, sub_command: str = "tell", char_name: str = "self", notify_time: int = MINE_REFRESH_INTERVAL):
+async def mine(ctx, sub_command: str = TELL, char_name: str = SELF, notify_time: int = MINE_REFRESH_INTERVAL):
     # Decide if the arguments are valid
     available_sub_commands = [TELL, CANCEL, LIST]
     if sub_command not in available_sub_commands:
@@ -221,6 +229,102 @@ async def mine(ctx, sub_command: str = "tell", char_name: str = "self", notify_t
                     response += "\n{}{}：还剩{}".format(
                         display_name, char_repr, time_repr)
         await ctx.send(response)
+
+
+@bot.command(name="gacha", help="Gacha!")
+async def gacha_command(ctx, sub_command: str = PULL, num: int = 10):
+    # Decide if the arguments are valid
+    available_sub_commands = [PULL, STATS, RESET]
+    if sub_command not in available_sub_commands:
+        raise commands.errors.CommandNotFound
+
+    user_id = str(ctx.message.author.id)
+
+    if sub_command == PULL:
+        # Check the input
+        if num > 10:
+            num = 10
+        elif num < 1:
+            num = 1
+
+        # Get the base counts of gacha
+        total_count = 0
+        five_star_count = 0
+        four_star_count = 0
+        five_star_base = 0
+        four_star_base = 0
+        user_data = {"five_star_base": five_star_base,
+                     "four_star_base": four_star_base,
+                     "total_count": total_count,
+                     "five_star_count": five_star_count,
+                     "four_star_count": four_star_count
+                     }
+        if user_id in gacha_db.getall():
+            user_data = gacha_db.get(user_id)
+            five_star_base = user_data["five_star_base"]
+            four_star_base = user_data["four_star_base"]
+            total_count = user_data["total_count"]
+            five_star_count = user_data["five_star_count"]
+            four_star_count = user_data["four_star_count"]
+
+        # Pull from the pool
+        results = []
+        for _ in range(num):
+            result, outcome_pool = gacha.pull(five_star_base, four_star_base)
+            total_count += 1
+            five_star_base += 1
+            four_star_base += 1
+            if outcome_pool == 5:
+                five_star_base = 0
+                four_star_base = 0
+                five_star_count += 1
+            elif outcome_pool == 4:
+                four_star_base = 0
+                four_star_count += 1
+            results.append(result)
+
+        # Save the base counts of gacha
+        user_data["five_star_base"] = five_star_base
+        user_data["four_star_base"] = four_star_base
+        user_data["total_count"] = total_count
+        user_data["five_star_count"] = five_star_count
+        user_data["four_star_count"] = four_star_count
+        gacha_db.set(user_id, user_data)
+
+        # Tell the user
+        message = "抽卡结果"
+        for i in range(len(results)):
+            word = language.get_word(results[i], LANGUAGE)
+            message += "\n{}{}".format(
+                data.get_rarity(results[i])*":star:", word)
+        await ctx.send("{} {}".format(ctx.message.author.mention, message))
+
+    elif sub_command == STATS:
+        if user_id in gacha_db.getall():
+            # Get the information
+            user_data = gacha_db.get(user_id)
+            five_star_base = user_data["five_star_base"]
+            four_star_base = user_data["four_star_base"]
+            total_count = user_data["total_count"]
+            five_star_count = user_data["five_star_count"]
+            four_star_count = user_data["four_star_count"]
+
+            # Calculate related stats
+            five_star_rate = round(five_star_count / total_count, 2)
+            four_star_rate = round(four_star_count / total_count, 2)
+
+            message = "你总共抽了{}发，五星出货率为{}，四星出货率为{}".format(
+                total_count, five_star_rate, four_star_rate)
+            ctx.send("{} {}".format(ctx.message.author.mention, message))
+
+        else:
+            message = "没有你的记录"
+            ctx.send("{} {}".format(ctx.message.author.mention, message))
+
+    elif sub_command == RESET:
+        gacha_db.rem(user_id)
+        message = "已经重置你的抽卡记录"
+        ctx.send("{} {}".format(ctx.message.author.mention, message))
 
 
 @tasks.loop(seconds=MINE_NOTIFY_INTERVAL)
