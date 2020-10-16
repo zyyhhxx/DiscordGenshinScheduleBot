@@ -194,7 +194,7 @@ async def mine_list(ctx, char_name: str = mine.SELF):
                         display_name = member.nick
 
                 # Calculate delta time
-                time_repr = mine.get_time_repr(datetime_string, True, LANGUAGE)
+                time_repr = mine.get_time_repr(datetime_string, False, LANGUAGE)
 
                 # Append
                 char_repr = ""
