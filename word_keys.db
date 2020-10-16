@@ -470,5 +470,15 @@
       "zh_s": "砂糖",
       "en": "Sucrose"
     }
+  },
+  "wishes": {
+    "standard_wish": {
+      "zh_s": "标准池",
+      "en": "Standard Wish"
+    },
+    "venti_up_wish": {
+      "zh_s": "温迪up池",
+      "en": "Venti Promotion Wish"
+    }
   }
 }

@@ -4,6 +4,7 @@ import pickledb
 weapons = pickledb.load('weapons.db', False)
 characters = pickledb.load('characters.db', False)
 word_keys = pickledb.load('word_keys.db', False)
+wishes = pickledb.load('wishes.db', False)
 
 # Read JSON data as a dictionary
 

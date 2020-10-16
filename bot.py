@@ -231,80 +231,104 @@ async def mine(ctx, sub_command: str = TELL, char_name: str = SELF, notify_time:
         await ctx.send(response)
 
 
-@bot.command(name="gacha", help="Gacha!")
-async def gacha_command(ctx, sub_command: str = PULL, num: int = 10):
-    # Decide if the arguments are valid
-    available_sub_commands = [PULL, STATS, RESET]
-    if sub_command not in available_sub_commands:
-        raise commands.errors.CommandNotFound
+@bot.group(name="gacha", aliases=["g"], help="Gacha!")
+async def gacha_command(ctx):
+    if not ctx.invoked_subcommand:
+        await ctx.invoke(gacha_pull)
 
+
+@gacha_command.command(name="pull", aliases=["p"], help="Try your luck with gacha!")
+async def gacha_pull(ctx, num: int = 10, wish: int = 0):
     user_id = str(ctx.message.author.id)
+    # Check the input
+    if num > 100:
+        num = 100
+    elif num < 1:
+        num = 1
 
-    if sub_command == PULL:
-        # Check the input
+    # Get the base counts of gacha
+    total_count = 0
+    five_star_count = 0
+    four_star_count = 0
+    five_star_base = 0
+    four_star_base = 0
+    items = {}
+    user_data = {"five_star_base": five_star_base,
+                 "four_star_base": four_star_base,
+                 "total_count": total_count,
+                 "five_star_count": five_star_count,
+                 "four_star_count": four_star_count,
+                 "items": items
+                 }
+    if user_id in gacha_db.getall():
+        user_data = gacha_db.get(user_id)
+        five_star_base = user_data["five_star_base"]
+        four_star_base = user_data["four_star_base"]
+        total_count = user_data["total_count"]
+        five_star_count = user_data["five_star_count"]
+        four_star_count = user_data["four_star_count"]
+        items = user_data["items"]
+
+    # Pull from the pool
+    results = []
+    for _ in range(num):
+        result, outcome_pool = gacha.pull(wish, five_star_base, four_star_base)
+        total_count += 1
+        five_star_base += 1
+        four_star_base += 1
+        if outcome_pool == 5:
+            five_star_base = 0
+            four_star_base = 0
+            five_star_count += 1
+        elif outcome_pool == 4:
+            four_star_base = 0
+            four_star_count += 1
+        if outcome_pool > 3:
+            if result not in items:
+                items[result] = 1
+            else:
+                items[result] += 1
         if num > 10:
-            num = 10
-        elif num < 1:
-            num = 1
-
-        # Get the base counts of gacha
-        total_count = 0
-        five_star_count = 0
-        four_star_count = 0
-        five_star_base = 0
-        four_star_base = 0
-        user_data = {"five_star_base": five_star_base,
-                     "four_star_base": four_star_base,
-                     "total_count": total_count,
-                     "five_star_count": five_star_count,
-                     "four_star_count": four_star_count
-                     }
-        if user_id in gacha_db.getall():
-            user_data = gacha_db.get(user_id)
-            five_star_base = user_data["five_star_base"]
-            four_star_base = user_data["four_star_base"]
-            total_count = user_data["total_count"]
-            five_star_count = user_data["five_star_count"]
-            four_star_count = user_data["four_star_count"]
-
-        # Pull from the pool
-        results = []
-        for _ in range(num):
-            result, outcome_pool = gacha.pull(five_star_base, four_star_base)
-            total_count += 1
-            five_star_base += 1
-            four_star_base += 1
-            if outcome_pool == 5:
-                five_star_base = 0
-                four_star_base = 0
-                five_star_count += 1
-            elif outcome_pool == 4:
-                four_star_base = 0
-                four_star_count += 1
+            if outcome_pool > 3:
+                results.append(result)
+        else:
             results.append(result)
 
-        # Save the base counts of gacha
-        user_data["five_star_base"] = five_star_base
-        user_data["four_star_base"] = four_star_base
-        user_data["total_count"] = total_count
-        user_data["five_star_count"] = five_star_count
-        user_data["four_star_count"] = four_star_count
-        gacha_db.set(user_id, user_data)
+    # Save the base counts of gacha
+    user_data["five_star_base"] = five_star_base
+    user_data["four_star_base"] = four_star_base
+    user_data["total_count"] = total_count
+    user_data["five_star_count"] = five_star_count
+    user_data["four_star_count"] = four_star_count
+    user_data["items"] = items
+    gacha_db.set(user_id, user_data)
 
-        # Tell the user
-        message = "抽卡结果"
-        for i in range(len(results)):
-            word = language.get_word(results[i], LANGUAGE)
-            message += "\n{}{}".format(
-                data.get_rarity(results[i])*":star:", word)
-        await ctx.send("{} {}".format(ctx.message.author.mention, message))
+    # Tell the user
+    message = language.get_word(gacha.wishes[wish]["name"], LANGUAGE) + "抽卡结果"
+    if num <= 10 and five_star_count > 0 and five_star_base >= 10:
+        message += "\n距离上次五星出货：{}".format(five_star_base)
+    for i in range(len(results)):
+        word = language.get_word(results[i], LANGUAGE)
+        message += "\n{}{}".format(
+            data.get_rarity(results[i])*":star:", word)
+    await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
-    elif sub_command == STATS:
+
+@gacha_command.command(name="reset", aliases=["r"], help="Reset your gacha record")
+async def gacha_reset(ctx):
+    user_id = str(ctx.message.author.id)
+    gacha_db.rem(user_id)
+    message = "已经重置你的抽卡记录"
+    await ctx.send("{} {}".format(ctx.message.author.mention, message))
+
+
+@gacha_command.group(name="stats", aliases=["s"], help="Show your gacha stats")
+async def gacha_stats(ctx):
+    if not ctx.invoked_subcommand:
+        user_id = str(ctx.message.author.id)
         if user_id in gacha_db.getall():
             # Get the information
             user_data = gacha_db.get(user_id)
-            five_star_base = user_data["five_star_base"]
-            four_star_base = user_data["four_star_base"]
             total_count = user_data["total_count"]
             five_star_count = user_data["five_star_count"]
             four_star_count = user_data["four_star_count"]
@@ -313,17 +337,46 @@ async def gacha_command(ctx, sub_command: str = PULL, num: int = 10):
             five_star_rate = round(five_star_count / total_count * 100, 2)
             four_star_rate = round(four_star_count / total_count * 100, 2)
 
-            message = "你总共抽了{}发，五星出货率为{}%，四星出货率为{}%".format(
-                total_count, five_star_rate, four_star_rate)
+            message = "抽卡记录\n你总共抽了{}发，花了{}元\n五星出货率为{}%，四星出货率为{}%".format(
+                total_count, total_count*16, five_star_rate, four_star_rate)
             await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
         else:
             message = "没有你的记录"
             await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
-    elif sub_command == RESET:
-        gacha_db.rem(user_id)
-        message = "已经重置你的抽卡记录"
+
+@gacha_stats.group(name="items", aliases=["i"], help="Show your gacha stats with items")
+async def gacha_stats_items(ctx):
+    user_id = str(ctx.message.author.id)
+    if user_id in gacha_db.getall():
+        # Get the information
+        user_data = gacha_db.get(user_id)
+        total_count = user_data["total_count"]
+        five_star_count = user_data["five_star_count"]
+        four_star_count = user_data["four_star_count"]
+        items = user_data["items"]
+
+        items_stats = {}
+        items_stats[5] = {}
+        items_stats[4] = {}
+        for key in items:
+            rarity = data.get_rarity(key)
+            items_stats[rarity][key] = items[key]
+
+        message = "抽卡记录\n你总共抽了{}发，花了{}元\n获得五星{}个，四星{}个".format(
+            total_count, total_count*16, five_star_count, four_star_count)
+        for key in items_stats[5]:
+            message += "\n{}{} ✕ {}".format(":star:"*5,
+                                            language.get_word(key, LANGUAGE), items_stats[5][key])
+        for key in items_stats[4]:
+            message += "\n{}{} ✕ {}".format(":star:"*4,
+                                            language.get_word(key, LANGUAGE), items_stats[4][key])
+
+        await ctx.send("{} {}".format(ctx.message.author.mention, message))
+
+    else:
+        message = "没有你的记录"
         await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
 
