@@ -29,9 +29,9 @@ def pull(five_star_base: int = 0, four_star_base: int = 0):
 
     # Decide which the bottom pool is. Lower can still get items in a hgiher pool
     bot_pool = 3
-    if five_star_base >= FIVE_STAR_BOT:
+    if five_star_base >= FIVE_STAR_BOT - 1:
         bot_pool = 5
-    elif four_star_base >= FOUR_STAR_BOT:
+    elif four_star_base >= FOUR_STAR_BOT - 1:
         bot_pool = 4
 
     # Decide which pool to get

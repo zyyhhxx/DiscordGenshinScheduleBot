@@ -310,21 +310,21 @@ async def gacha_command(ctx, sub_command: str = PULL, num: int = 10):
             four_star_count = user_data["four_star_count"]
 
             # Calculate related stats
-            five_star_rate = round(five_star_count / total_count, 2)
-            four_star_rate = round(four_star_count / total_count, 2)
+            five_star_rate = round(five_star_count / total_count * 100, 2)
+            four_star_rate = round(four_star_count / total_count * 100, 2)
 
-            message = "你总共抽了{}发，五星出货率为{}，四星出货率为{}".format(
+            message = "你总共抽了{}发，五星出货率为{}%，四星出货率为{}%".format(
                 total_count, five_star_rate, four_star_rate)
-            ctx.send("{} {}".format(ctx.message.author.mention, message))
+            await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
         else:
             message = "没有你的记录"
-            ctx.send("{} {}".format(ctx.message.author.mention, message))
+            await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
     elif sub_command == RESET:
         gacha_db.rem(user_id)
         message = "已经重置你的抽卡记录"
-        ctx.send("{} {}".format(ctx.message.author.mention, message))
+        await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
 
 @tasks.loop(seconds=MINE_NOTIFY_INTERVAL)
