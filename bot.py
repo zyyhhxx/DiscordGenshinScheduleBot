@@ -13,20 +13,21 @@ from discord.ext import commands, tasks
 import gacha
 import data
 import language
+import mine
 
 # Predefined constants
-DEFAULT_MINE_REFRESH_INTERVAL = 259200
-DEFAULT_MINE_NOTIFY_INTERVAL = 1800
 LANGUAGE = "zh_s"
+TIME = "time"
+CHANNEL = "channel"
 
 # Handle command line arguments
 parser = argparse.ArgumentParser(description="Discord bot for Genshin")
 parser.add_argument('-t', '--test', dest='test',
                     action='store_true', help="test mode")
 parser.add_argument('-m', '--mine', dest='mine', nargs='?',
-                    type=int, const=DEFAULT_MINE_REFRESH_INTERVAL, default=DEFAULT_MINE_REFRESH_INTERVAL, help="mine refresh interval in seconds")
+                    type=int, const=mine.DEFAULT_MINE_REFRESH_INTERVAL, default=mine.DEFAULT_MINE_REFRESH_INTERVAL, help="mine refresh interval in seconds")
 parser.add_argument('-n', '--notify', dest='mine_notify_interval', nargs='?',
-                    type=int, const=DEFAULT_MINE_NOTIFY_INTERVAL, default=DEFAULT_MINE_NOTIFY_INTERVAL, help="mine notify interval in seconds")
+                    type=int, const=mine.DEFAULT_MINE_NOTIFY_INTERVAL, default=mine.DEFAULT_MINE_NOTIFY_INTERVAL, help="mine notify interval in seconds")
 args = parser.parse_args()
 
 # Constants
@@ -36,13 +37,6 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 DICE_LIMIT = 100
 MINE_REFRESH_INTERVAL = args.mine
 MINE_NOTIFY_INTERVAL = args.mine_notify_interval
-TELL = "tell"
-CANCEL = "cancel"
-SELF = "self"
-LIST = "list"
-PULL = "pull"
-STATS = "stats"
-RESET = "reset"
 CURSE = "我:sunny:死你的:horse:"
 weekay_reprs = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
 
@@ -71,13 +65,7 @@ gacha_db = pickledb.load('gacha.db', True)
 ###############
 
 
-@bot.command(name="init", help='The First thing a program has to say')
-async def hello_world(ctx):
-    response = "Hello World!"
-    await ctx.send(response)
-
-
-@bot.command(name='roll', help='Roll one (or more) dice')
+@bot.command(name='roll', aliases=["r"], help='Roll one (or more) dice')
 async def roll(ctx, number_of_dice: int = 1, number_of_sides: int = 6):
     if number_of_dice <= 0 or number_of_dice > DICE_LIMIT or number_of_sides > DICE_LIMIT:
         await ctx.send("{} {}，这数合不合理你自己没点逼数吗".format(
@@ -91,7 +79,7 @@ async def roll(ctx, number_of_dice: int = 1, number_of_sides: int = 6):
                                             ', '.join(dice)))
 
 
-@bot.command(name="work", help='Today\'s work')
+@bot.command(name="work", aliases=["w"], help='Today\'s work')
 async def work(ctx, weekday: int = -1):
     if weekday > 6 or weekday < -1:
         await ctx.send("{} {}，一周有几天需要我教你吗？".format(ctx.message.author.mention, CURSE))
@@ -128,107 +116,92 @@ async def work(ctx, weekday: int = -1):
     await ctx.send(response)
 
 
-@bot.command(name="mine", help="Tell me you\'ve mined today! I\'ll notify you when it's ready again")
-async def mine(ctx, sub_command: str = TELL, char_name: str = SELF, notify_time: int = MINE_REFRESH_INTERVAL):
-    # Decide if the arguments are valid
-    available_sub_commands = [TELL, CANCEL, LIST]
-    if sub_command not in available_sub_commands:
-        raise commands.errors.CommandNotFound
+@bot.group(name="mine", aliases=["m"],
+           help="Tell me you\'ve mined today! I\'ll notify you when it's ready again")
+async def mine_command(ctx):
+    if not ctx.invoked_subcommand:
+        await ctx.invoke(mine_tell)
 
+
+@mine_command.command(name="tell", aliases=["t"], help="Tell the bot you've mined today")
+async def mine_tell(ctx, char_name: str = mine.SELF, notify_time: int = MINE_REFRESH_INTERVAL):
     response = ""
     key = "{}.{}".format(str(ctx.message.author.id), char_name)
-    record = mine_db.lgetall(key) if mine_db.exists(key) else None
+    record = mine_db.get(key) if mine_db.exists(key) else None
+    char_repr = mine.get_char_repr(char_name, LANGUAGE)
 
-    char_repr = "你"
-    if char_name != SELF:
-        char_repr = char_name
+    # Check if the user has already reported
+    if record:
+        # Calculate delta time
+        datetime_string = record[TIME]
+        time_repr = mine.get_time_repr(datetime_string, True, LANGUAGE)
 
-    # Check if the user is requesting a cancellation
-    if sub_command == CANCEL:
-        if record:
-            mine_db.lremlist(key)
-            response = "{} 已经取消了{}的记录".format(
-                ctx.message.author.mention, char_repr)
-        else:
-            response = "{} {}，你说过{}挖矿吗".format(
-                ctx.message.author.mention, CURSE, char_repr)
-        await ctx.send(response)
+        response = "{} {}，你不是在{}前说过{}挖矿了吗".format(
+            ctx.message.author.mention, CURSE, time_repr, char_repr)
+    else:
+        # Add a new entry
+        response = "{} 知道{}今天挖矿了".format(
+            ctx.message.author.mention, char_repr)
 
-    elif sub_command == TELL:
-        # Check if the user has already reported
-        if record:
-            # Calculate delta time
-            _, record_time = record
-            current_datetime = datetime.now()
-            start_datetime = datetime.strptime(
-                record_time, "%Y-%m-%d %H:%M:%S.%f")
-            delta_datetime = current_datetime - start_datetime
-            total_seconds = delta_datetime.total_seconds()
-            mins = (total_seconds // 60) % 60
-            hours = (total_seconds // 3600) % 24
-            days = total_seconds // 86400
-            time_repr = "{}分钟".format(int(mins))
-            if hours > 0:
-                time_repr = "{}小时".format(int(hours)) + time_repr
-            if days > 0:
-                time_repr = "{}天".format(int(days)) + time_repr
+        record = {
+            CHANNEL:str(ctx.message.channel.id),
+            TIME: str(datetime.now())
+        }
+        mine_db.set(key, record)
+    await ctx.send(response)
 
-            response = "{} {}，你不是在{}前说过{}挖矿了吗".format(
-                ctx.message.author.mention, CURSE, time_repr, char_repr)
-            await ctx.send(response)
-        else:
-            # Add a new entry
-            response = "{} 知道{}今天挖矿了".format(
-                ctx.message.author.mention, char_repr)
 
-            # record format: (channel id, time)
-            mine_db.lcreate(key)
-            mine_db.ladd(key, str(ctx.message.channel.id))
-            mine_db.ladd(key, str(datetime.now()))
-            await ctx.send(response)
+@mine_command.command(name="cancel", aliases=["c"], help="Cancel your mine record")
+async def mine_cancel(ctx, char_name: str = mine.SELF):
+    response = ""
+    key = "{}.{}".format(str(ctx.message.author.id), char_name)
+    record = mine_db.get(key) if mine_db.exists(key) else None
+    char_repr = mine.get_char_repr(char_name, LANGUAGE)
 
-    elif sub_command == LIST:
-        response = "没人挖过矿"
+    if record:
+        mine_db.rem(key)
+        response = "{} 已经取消了{}的记录".format(
+            ctx.message.author.mention, char_repr)
+    else:
+        response = "{} {}，你说过{}挖矿吗".format(
+            ctx.message.author.mention, CURSE, char_repr)
+    await ctx.send(response)
 
-        keys = list(mine_db.getall())
-        if len(keys) > 0:
-            response = "挖矿日程"
-            for key in keys:
-                if mine_db.exists(key):
-                    # Get necessary information
-                    user_id, char_name = key.split(".")
-                    user = bot.get_user(int(user_id))
-                    display_name = user.display_name
-                    channel_id, datetime_string = mine_db.lgetall(key)
-                    channel = bot.get_channel(int(channel_id))
-                    if type(channel) != discord.DMChannel:
-                        guild = channel.guild
-                        if guild:
-                            member = guild.get_member(int(user_id))
-                            display_name = member.nick
 
-                    # Calculate delta time
-                    current_datetime = datetime.now()
-                    start_datetime = datetime.strptime(
-                        datetime_string, "%Y-%m-%d %H:%M:%S.%f")
-                    delta_datetime = current_datetime - start_datetime
-                    total_seconds = MINE_REFRESH_INTERVAL - delta_datetime.total_seconds()
-                    mins = (total_seconds // 60) % 60
-                    hours = (total_seconds // 3600) % 24
-                    days = total_seconds // 86400
-                    time_repr = "{}分钟".format(int(mins))
-                    if hours > 0:
-                        time_repr = "{}小时".format(int(hours)) + time_repr
-                    if days > 0:
-                        time_repr = "{}天".format(int(days)) + time_repr
+@mine_command.command(name="list", aliases=["l"], help="List all mining records")
+async def mine_list(ctx, char_name: str = mine.SELF):
+    key = "{}.{}".format(str(ctx.message.author.id), char_name)
+    char_repr = mine.get_char_repr(char_name, LANGUAGE)
+    response = "没人挖过矿"
 
-                    # Append
-                    char_repr = ""
-                    if char_name != SELF:
-                        char_repr = "-"+char_name
-                    response += "\n{}{}：还剩{}".format(
-                        display_name, char_repr, time_repr)
-        await ctx.send(response)
+    keys = list(mine_db.getall())
+    if len(keys) > 0:
+        response = "挖矿日程"
+        for key in keys:
+            if mine_db.exists(key):
+                # Get necessary information
+                user_id, char_name = key.split(".")
+                user = bot.get_user(int(user_id))
+                display_name = user.display_name
+                record = mine_db.get(key)
+                channel_id, datetime_string = record[CHANNEL], record[TIME]
+                channel = bot.get_channel(int(channel_id))
+                if type(channel) != discord.DMChannel:
+                    guild = channel.guild
+                    if guild:
+                        member = guild.get_member(int(user_id))
+                        display_name = member.nick
+
+                # Calculate delta time
+                time_repr = mine.get_time_repr(datetime_string, True, LANGUAGE)
+
+                # Append
+                char_repr = ""
+                if char_name != mine.SELF:
+                    char_repr = "-"+char_name
+                response += "\n{}{}：还剩{}".format(
+                    display_name, char_repr, time_repr)
+    await ctx.send(response)
 
 
 @bot.group(name="gacha", aliases=["g"], help="Gacha!")
@@ -346,7 +319,8 @@ async def gacha_stats(ctx):
             await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
 
-@gacha_stats.group(name="items", aliases=["i"], help="Show your gacha stats with items")
+@gacha_stats.command(name="items", aliases=["i"],
+                     help="Show your gacha stats with items")
 async def gacha_stats_items(ctx):
     user_id = str(ctx.message.author.id)
     if user_id in gacha_db.getall():
@@ -389,7 +363,8 @@ async def mine_notify():
         if mine_db.exists(key):
             # Get necessary information
             user_id, char_name = key.split(".")
-            channel_id, datetime_string = mine_db.lgetall(key)
+            record = mine_db.get(key)
+            channel_id, datetime_string = record[CHANNEL], record[TIME]
             user = bot.get_user(int(user_id))
             channel = bot.get_channel(int(channel_id))
 
@@ -405,9 +380,7 @@ async def mine_notify():
                     continue
 
                 # Notify
-                char_repr = "你"
-                if char_name != SELF:
-                    char_repr = char_name
+                char_repr = mine.get_char_repr(char_name, LANGUAGE)
                 response = "{} {}又可以挖矿了".format(user.mention, char_repr)
                 await channel.send(response)
                 mine_db.lremlist(key)

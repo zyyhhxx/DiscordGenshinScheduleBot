@@ -480,5 +480,23 @@
       "zh_s": "温迪up池",
       "en": "Venti Promotion Wish"
     }
+  },
+  "message": {
+    "you": {
+      "zh_s": "你",
+      "en": "you"
+    },
+    "days": {
+      "zh_s": "天",
+      "en": "days"
+    },
+    "minutes": {
+      "zh_s": "分钟",
+      "en": "minutes"
+    },
+    "hours": {
+      "zh_s": "小时",
+      "en": "hours"
+    }
   }
 }
