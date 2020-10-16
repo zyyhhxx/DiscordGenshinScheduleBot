@@ -9,6 +9,7 @@ import asyncio
 import pickledb
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
+from beautifultable import BeautifulTable
 
 import gacha
 import data
@@ -144,7 +145,7 @@ async def mine_tell(ctx, char_name: str = mine.SELF, notify_time: int = MINE_REF
             ctx.message.author.mention, char_repr)
 
         record = {
-            CHANNEL:str(ctx.message.channel.id),
+            CHANNEL: str(ctx.message.channel.id),
             TIME: str(datetime.now())
         }
         mine_db.set(key, record)
@@ -280,10 +281,17 @@ async def gacha_pull(ctx, num: int = 10, wish: int = 0):
     message = language.get_word(gacha.wishes[wish]["name"], LANGUAGE) + "抽卡结果"
     if num <= 10 and five_star_count > 0 and five_star_base >= 10:
         message += "\n距离上次五星出货：{}".format(five_star_base)
+    table = BeautifulTable()
+    table.set_style(BeautifulTable.STYLE_NONE)
+    table.columns.alignment = BeautifulTable.ALIGN_LEFT
     for i in range(len(results)):
         word = language.get_word(results[i], LANGUAGE)
-        message += "\n{}{}".format(
-            data.get_rarity(results[i])*":star:", word)
+        rarity = data.get_rarity(results[i])
+        rarity_repr = rarity*":star:"
+        if rarity >= 5:
+            word = "**{}**".format(word)
+        table.rows.append([rarity_repr, word])
+    message += "\n" + str(table)
     await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
 
