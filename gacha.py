@@ -1,6 +1,7 @@
 import typing
 import random
 import data
+import language
 
 FIVE_STAR_RATE = 0.006
 FIVE_STAR_BOT = 90
@@ -68,12 +69,14 @@ def pull(wish: int = 0, five_star_base: int = 0, four_star_base: int = 0):
 
     return item_id, pool
 
+
 def check_gacha_channel(ctx, gacha_channel):
     if gacha_channel and ctx.message.channel.id != gacha_channel.id:
         channel_name = gacha_channel.name
-        message = "本频道不能抽卡，请到*{}*".format(channel_name)
+        message = "{}，给我滚去**{}**抽卡".format(language.CURSE, channel_name)
         return False, message
     return True, None
+
 
 def main():
     """

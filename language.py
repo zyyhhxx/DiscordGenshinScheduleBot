@@ -2,6 +2,7 @@ import pickledb
 import data
 
 EN = "en"
+CURSE = "我:sunny:死你的:horse:"
 word_keys = {}
 for key in data.word_keys.getall():
     word_keys = {**word_keys, **data.word_keys.get(key)}

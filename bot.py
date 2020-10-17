@@ -38,7 +38,6 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 DICE_LIMIT = 100
 MINE_REFRESH_INTERVAL = args.mine
 MINE_NOTIFY_INTERVAL = args.mine_notify_interval
-CURSE = "我:sunny:死你的:horse:"
 weekay_reprs = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
 
 # Initialization
@@ -72,7 +71,7 @@ gacha_db = pickledb.load('gacha.db', True)
 async def roll(ctx, number_of_dice: int = 1, number_of_sides: int = 6):
     if number_of_dice <= 0 or number_of_dice > DICE_LIMIT or number_of_sides > DICE_LIMIT:
         await ctx.send("{} {}，这数合不合理你自己没点逼数吗".format(
-            ctx.message.author.mention, CURSE))
+            ctx.message.author.mention, language.CURSE))
     else:
         dice = [
             str(random.choice(range(1, number_of_sides + 1)))
@@ -85,7 +84,7 @@ async def roll(ctx, number_of_dice: int = 1, number_of_sides: int = 6):
 @bot.command(name="work", aliases=["w"], help='Today\'s work')
 async def work(ctx, weekday: int = -1):
     if weekday > 6 or weekday < -1:
-        await ctx.send("{} {}，一周有几天需要我教你吗？".format(ctx.message.author.mention, CURSE))
+        await ctx.send("{} {}，一周有几天需要我教你吗？".format(ctx.message.author.mention, language.CURSE))
         return
 
     # Get the correct weekday in game, if not specified by user
@@ -140,7 +139,7 @@ async def mine_tell(ctx, char_name: str = mine.SELF, notify_time: int = MINE_REF
         time_repr = mine.get_time_repr(datetime_string, True, LANGUAGE)
 
         response = "{} {}，你不是在{}前说过{}挖矿了吗".format(
-            ctx.message.author.mention, CURSE, time_repr, char_repr)
+            ctx.message.author.mention, language.CURSE, time_repr, char_repr)
     else:
         # Add a new entry
         response = "{} 知道{}今天挖矿了".format(
@@ -167,7 +166,7 @@ async def mine_cancel(ctx, char_name: str = mine.SELF):
             ctx.message.author.mention, char_repr)
     else:
         response = "{} {}，你说过{}挖矿吗".format(
-            ctx.message.author.mention, CURSE, char_repr)
+            ctx.message.author.mention, language.CURSE, char_repr)
     await ctx.send(response)
 
 
@@ -460,12 +459,12 @@ async def mine_notify():
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CommandNotFound):
-        await ctx.send("{} {}，不会用别用".format(ctx.message.author.mention, CURSE))
+        await ctx.send("{} {}，不会用别用".format(ctx.message.author.mention, language.CURSE))
     else:
         if IF_TEST:
-            await ctx.send("{} {}，给我整晕了: {}".format(ctx.message.author.mention, CURSE, error))
+            await ctx.send("{} {}，给我整晕了: {}".format(ctx.message.author.mention, language.CURSE, error))
         else:
-            await ctx.send("{} {}，给我整晕了".format(ctx.message.author.mention, CURSE))
+            await ctx.send("{} {}，给我整晕了".format(ctx.message.author.mention, language.CURSE))
 
 # The main routine of the bot
 mine_notify.start()
