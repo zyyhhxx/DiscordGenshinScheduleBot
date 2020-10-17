@@ -210,12 +210,12 @@ async def mine_list(ctx, char_name: str = mine.SELF):
 
 @bot.group(name="gacha", aliases=["g"], help="Gacha!")
 async def gacha_command(ctx):
-    can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
-    if not can_gacha:
-        await ctx.send("{} {}".format(ctx.message.author.mention, message))
-        return
-
     if not ctx.invoked_subcommand:
+        can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
+        if not can_gacha:
+            await ctx.send("{} {}".format(ctx.message.author.mention, message))
+            return
+
         await ctx.invoke(gacha_pull)
 
 
@@ -348,12 +348,12 @@ async def gacha_reset(ctx):
 
 @gacha_command.group(name="stats", aliases=["s"], help="Show your gacha stats")
 async def gacha_stats(ctx):
-    can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
-    if not can_gacha:
-        await ctx.send("{} {}".format(ctx.message.author.mention, message))
-        return
-
     if not ctx.invoked_subcommand:
+        can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
+        if not can_gacha:
+            await ctx.send("{} {}".format(ctx.message.author.mention, message))
+            return
+
         user_id = str(ctx.message.author.id)
         if user_id in gacha_db.getall():
             # Get the information
