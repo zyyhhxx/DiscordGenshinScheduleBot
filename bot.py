@@ -451,9 +451,9 @@ async def mine_notify():
                 char_repr = mine.get_char_repr(char_name, LANGUAGE)
                 response = "{} {}又可以挖矿了".format(user.mention, char_repr)
                 await channel.send(response)
-                mine_db.lremlist(key)
+                mine_db.rem(key)
             else:
-                mine_db.lremlist(key)
+                mine_db.rem(key)
 
 
 @bot.event
