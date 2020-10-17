@@ -54,6 +54,8 @@ intents.presences = False
 intents.members = True
 
 bot = commands.Bot(command_prefix=command_prefix, intents=intents)
+global gacha_channel_id
+gacha_channel_id = 0
 
 # Read data
 characters = data.readWeeklyData("character.json")
@@ -194,7 +196,8 @@ async def mine_list(ctx, char_name: str = mine.SELF):
                         display_name = member.nick
 
                 # Calculate delta time
-                time_repr = mine.get_time_repr(datetime_string, False, LANGUAGE)
+                time_repr = mine.get_time_repr(
+                    datetime_string, False, LANGUAGE)
 
                 # Append
                 char_repr = ""
@@ -207,16 +210,26 @@ async def mine_list(ctx, char_name: str = mine.SELF):
 
 @bot.group(name="gacha", aliases=["g"], help="Gacha!")
 async def gacha_command(ctx):
+    can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
+    if not can_gacha:
+        await ctx.send("{} {}".format(ctx.message.author.mention, message))
+        return
+
     if not ctx.invoked_subcommand:
         await ctx.invoke(gacha_pull)
 
 
 @gacha_command.command(name="pull", aliases=["p"], help="Try your luck with gacha!")
 async def gacha_pull(ctx, num: int = 10, wish: int = 0):
+    can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
+    if not can_gacha:
+        await ctx.send("{} {}".format(ctx.message.author.mention, message))
+        return
+
     user_id = str(ctx.message.author.id)
     # Check the input
-    if num > 100:
-        num = 100
+    if num > 1000:
+        num = 1000
     elif num < 1:
         num = 1
 
@@ -278,25 +291,55 @@ async def gacha_pull(ctx, num: int = 10, wish: int = 0):
     gacha_db.set(user_id, user_data)
 
     # Tell the user
-    message = language.get_word(gacha.wishes[wish]["name"], LANGUAGE) + "抽卡结果"
+    message = "{}{}发抽卡结果".format(language.get_word(
+        gacha.wishes[wish]["name"], LANGUAGE), num)
     if num <= 10 and five_star_count > 0 and five_star_base >= 10:
         message += "\n距离上次五星出货：{}".format(five_star_base)
     table = BeautifulTable()
     table.set_style(BeautifulTable.STYLE_NONE)
     table.columns.alignment = BeautifulTable.ALIGN_LEFT
-    for i in range(len(results)):
-        word = language.get_word(results[i], LANGUAGE)
-        rarity = data.get_rarity(results[i])
-        rarity_repr = rarity*":star:"
-        if rarity >= 5:
-            word = "**{}**".format(word)
-        table.rows.append([rarity_repr, word])
-    message += "\n" + str(table)
+    if num <= 10:
+        for i in range(len(results)):
+            word = language.get_word(results[i], LANGUAGE)
+            rarity = data.get_rarity(results[i])
+            rarity_repr = rarity*":star:"
+            if rarity >= 5:
+                word = "**{}**".format(word)
+            table.rows.append([rarity_repr, word])
+        message += "\n" + str(table)
+    else:
+        # Put all results into a dictionary to count
+        count_results = {}
+        for i in range(len(results)):
+            if results[i] in count_results:
+                count_results[results[i]] += 1
+            else:
+                count_results[results[i]] = 1
+
+        # Then display the counts
+        items_stats = {}
+        items_stats[5] = {}
+        items_stats[4] = {}
+        for key in count_results:
+            rarity = data.get_rarity(key)
+            items_stats[rarity][key] = count_results[key]
+        for key in items_stats[5]:
+            message += "\n{}{} ✕ {}".format(":star:"*5,
+                                            language.get_word(key, LANGUAGE), items_stats[5][key])
+        for key in items_stats[4]:
+            message += "\n{}{} ✕ {}".format(":star:"*4,
+                                            language.get_word(key, LANGUAGE), items_stats[4][key])
+
     await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
 
 @gacha_command.command(name="reset", aliases=["r"], help="Reset your gacha record")
 async def gacha_reset(ctx):
+    can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
+    if not can_gacha:
+        await ctx.send("{} {}".format(ctx.message.author.mention, message))
+        return
+
     user_id = str(ctx.message.author.id)
     gacha_db.rem(user_id)
     message = "已经重置你的抽卡记录"
@@ -305,6 +348,11 @@ async def gacha_reset(ctx):
 
 @gacha_command.group(name="stats", aliases=["s"], help="Show your gacha stats")
 async def gacha_stats(ctx):
+    can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
+    if not can_gacha:
+        await ctx.send("{} {}".format(ctx.message.author.mention, message))
+        return
+
     if not ctx.invoked_subcommand:
         user_id = str(ctx.message.author.id)
         if user_id in gacha_db.getall():
@@ -330,6 +378,11 @@ async def gacha_stats(ctx):
 @gacha_stats.command(name="items", aliases=["i"],
                      help="Show your gacha stats with items")
 async def gacha_stats_items(ctx):
+    can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
+    if not can_gacha:
+        await ctx.send("{} {}".format(ctx.message.author.mention, message))
+        return
+
     user_id = str(ctx.message.author.id)
     if user_id in gacha_db.getall():
         # Get the information
@@ -340,20 +393,22 @@ async def gacha_stats_items(ctx):
         items = user_data["items"]
 
         items_stats = {}
-        items_stats[5] = {}
-        items_stats[4] = {}
+        items_stats[5] = []
+        items_stats[4] = []
         for key in items:
             rarity = data.get_rarity(key)
-            items_stats[rarity][key] = items[key]
+            items_stats[rarity].append({"name": key, "count": items[key]})
+        items_stats[5].sort(key=lambda item: item["count"], reverse=True)
+        items_stats[4].sort(key=lambda item: item["count"], reverse=True)
 
         message = "抽卡记录\n你总共抽了{}发，花了{}元\n获得五星{}个，四星{}个".format(
             total_count, total_count*16, five_star_count, four_star_count)
-        for key in items_stats[5]:
+        for item in items_stats[5]:
             message += "\n{}{} ✕ {}".format(":star:"*5,
-                                            language.get_word(key, LANGUAGE), items_stats[5][key])
-        for key in items_stats[4]:
+                                            language.get_word(item["name"], LANGUAGE), item["count"])
+        for item in items_stats[4]:
             message += "\n{}{} ✕ {}".format(":star:"*4,
-                                            language.get_word(key, LANGUAGE), items_stats[4][key])
+                                            language.get_word(item["name"], LANGUAGE), item["count"])
 
         await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
@@ -361,6 +416,12 @@ async def gacha_stats_items(ctx):
         message = "没有你的记录"
         await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
+@gacha_command.command(name="set", help="Set the current channel as the gacha channel")
+async def gacha_set(ctx):
+    global gacha_channel_id
+    gacha_channel_id = ctx.message.channel.id
+    message = "已将本频道设为抽卡频道"
+    await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
 @tasks.loop(seconds=MINE_NOTIFY_INTERVAL)
 async def mine_notify():
