@@ -2,7 +2,7 @@ import os
 import discord
 import random
 import argparse
-from datetime import datetime
+import datetime
 import pytz
 import sys
 import asyncio
@@ -93,7 +93,7 @@ async def work(ctx, weekday: int = -1):
     if weekday_today == -1:
         today = "（今天）"
         chinaTimezone = pytz.timezone("Asia/Shanghai")
-        utc_now = pytz.utc.localize(datetime.utcnow())
+        utc_now = pytz.utc.localize(datetime.datetime.utcnow())
         date_timezone = utc_now.replace(
             tzinfo=pytz.utc).astimezone(chinaTimezone)
         weekday_today = date_timezone.weekday()
@@ -125,8 +125,17 @@ async def mine_command(ctx):
         await ctx.invoke(mine_tell)
 
 
-@mine_command.command(name="tell", aliases=["t"], help="Tell the bot you've mined today")
-async def mine_tell(ctx, char_name: str = mine.SELF, notify_time: int = MINE_REFRESH_INTERVAL):
+@mine_command.group(name="tell", aliases=["t"], help="Tell the bot you've mined today")
+async def mine_tell(ctx, offset: int = 0):
+    await ctx.send(mine_tell_method(ctx, offset=offset))
+
+
+@mine_tell.command(name="other", aliases=["o"], help="Tell the bot someone else's mined today")
+async def mine_tell_other(ctx, char_name: str = mine.SELF, offset: int = 0):
+    await ctx.send(mine_tell_method(ctx, char_name, offset))
+
+
+def mine_tell_method(ctx, char_name: str = mine.SELF, offset: int = 0):
     response = ""
     key = "{}.{}".format(str(ctx.message.author.id), char_name)
     record = mine_db.get(key) if mine_db.exists(key) else None
@@ -145,12 +154,17 @@ async def mine_tell(ctx, char_name: str = mine.SELF, notify_time: int = MINE_REF
         response = "{} 知道{}今天挖矿了".format(
             ctx.message.author.mention, char_repr)
 
-        record = {
-            CHANNEL: str(ctx.message.channel.id),
-            TIME: str(datetime.now())
-        }
-        mine_db.set(key, record)
-    await ctx.send(response)
+        if offset * 60 >= MINE_REFRESH_INTERVAL:
+            response = "{} {}，{}分钟根本就大于矿刷新时间好吗".format(
+            ctx.message.author.mention, language.CURSE, offset)
+        else:
+            mine_time = datetime.datetime.now() - datetime.timedelta(minutes=offset)
+            record = {
+                CHANNEL: str(ctx.message.channel.id),
+                TIME: str(mine_time)
+            }
+            mine_db.set(key, record)
+    return response
 
 
 @mine_command.command(name="cancel", aliases=["c"], help="Cancel your mine record")
@@ -450,8 +464,8 @@ async def mine_notify():
             # Only proceed when both channel and user are available
             if user and channel:
                 # Determine if it's time to notify
-                current_datetime = datetime.now()
-                start_datetime = datetime.strptime(
+                current_datetime = datetime.datetime.now()
+                start_datetime = datetime.datetime.strptime(
                     datetime_string, "%Y-%m-%d %H:%M:%S.%f")
                 delta_datetime = current_datetime - start_datetime
                 diff_seconds = delta_datetime.total_seconds()

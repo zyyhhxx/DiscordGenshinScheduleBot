@@ -23,6 +23,9 @@ def get_time_repr(datetime_string: str, elapsed: bool, language_key: str,
         total_seconds = delta_datetime.total_seconds()
     else:
         total_seconds = mine_refresh_interval - delta_datetime.total_seconds()
+    # If the time difference is negative, normalize it to 0
+    if total_seconds <= 0:
+        total_seconds = 0
     mins = (total_seconds // 60) % 60
     hours = (total_seconds // 3600) % 24
     days = total_seconds // 86400
