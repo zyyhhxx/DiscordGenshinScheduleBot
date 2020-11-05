@@ -20,6 +20,7 @@ import mine
 LANGUAGE = "zh_s"
 TIME = "time"
 CHANNEL = "channel"
+GACHA_CHANNEL = "gacha_channel"
 
 # Handle command line arguments
 parser = argparse.ArgumentParser(description="Discord bot for Genshin")
@@ -53,14 +54,13 @@ intents.presences = False
 intents.members = True
 
 bot = commands.Bot(command_prefix=command_prefix, intents=intents)
-global gacha_channel_id
-gacha_channel_id = 0
 
 # Read data
 characters = data.readWeeklyData("character.json")
 weapons = data.readWeeklyData("weapon.json")
 mine_db = pickledb.load('mine.db', True)
 gacha_db = pickledb.load('gacha.db', True)
+settings = pickledb.load('settings.db', True)
 
 ###############
 # Bot Commands
@@ -210,7 +210,9 @@ async def mine_list(ctx, char_name: str = mine.SELF):
 @bot.group(name="gacha", aliases=["g"], help="Gacha!")
 async def gacha_command(ctx):
     if not ctx.invoked_subcommand:
-        can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
+        gacha_channel_id = int(settings.get(GACHA_CHANNEL))
+        can_gacha, message = gacha.check_gacha_channel(
+            ctx, bot.get_channel(gacha_channel_id))
         if not can_gacha:
             await ctx.send("{} {}".format(ctx.message.author.mention, message))
             return
@@ -220,7 +222,9 @@ async def gacha_command(ctx):
 
 @gacha_command.command(name="pull", aliases=["p"], help="Try your luck with gacha!")
 async def gacha_pull(ctx, num: int = 10, wish: int = 0):
-    can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
+    gacha_channel_id = int(settings.get(GACHA_CHANNEL))
+    can_gacha, message = gacha.check_gacha_channel(
+        ctx, bot.get_channel(gacha_channel_id))
     if not can_gacha:
         await ctx.send("{} {}".format(ctx.message.author.mention, message))
         return
@@ -334,7 +338,9 @@ async def gacha_pull(ctx, num: int = 10, wish: int = 0):
 
 @gacha_command.command(name="reset", aliases=["r"], help="Reset your gacha record")
 async def gacha_reset(ctx):
-    can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
+    gacha_channel_id = int(settings.get(GACHA_CHANNEL))
+    can_gacha, message = gacha.check_gacha_channel(
+        ctx, bot.get_channel(gacha_channel_id))
     if not can_gacha:
         await ctx.send("{} {}".format(ctx.message.author.mention, message))
         return
@@ -348,7 +354,9 @@ async def gacha_reset(ctx):
 @gacha_command.group(name="stats", aliases=["s"], help="Show your gacha stats")
 async def gacha_stats(ctx):
     if not ctx.invoked_subcommand:
-        can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
+        gacha_channel_id = int(settings.get(GACHA_CHANNEL))
+        can_gacha, message = gacha.check_gacha_channel(
+            ctx, bot.get_channel(gacha_channel_id))
         if not can_gacha:
             await ctx.send("{} {}".format(ctx.message.author.mention, message))
             return
@@ -377,7 +385,9 @@ async def gacha_stats(ctx):
 @gacha_stats.command(name="items", aliases=["i"],
                      help="Show your gacha stats with items")
 async def gacha_stats_items(ctx):
-    can_gacha, message = gacha.check_gacha_channel(ctx, bot.get_channel(gacha_channel_id))
+    gacha_channel_id = int(settings.get(GACHA_CHANNEL))
+    can_gacha, message = gacha.check_gacha_channel(
+        ctx, bot.get_channel(gacha_channel_id))
     if not can_gacha:
         await ctx.send("{} {}".format(ctx.message.author.mention, message))
         return
@@ -415,12 +425,13 @@ async def gacha_stats_items(ctx):
         message = "没有你的记录"
         await ctx.send("{} {}".format(ctx.message.author.mention, message))
 
+
 @gacha_command.command(name="set", help="Set the current channel as the gacha channel")
 async def gacha_set(ctx):
-    global gacha_channel_id
-    gacha_channel_id = ctx.message.channel.id
+    settings.set(GACHA_CHANNEL, ctx.message.channel.id)
     message = "已将本频道设为抽卡频道"
     await ctx.send("{} {}".format(ctx.message.author.mention, message))
+
 
 @tasks.loop(seconds=MINE_NOTIFY_INTERVAL)
 async def mine_notify():

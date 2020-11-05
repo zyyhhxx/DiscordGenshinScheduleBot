@@ -132,4 +132,5 @@ dmypy.json
 .vscode
 mine.db
 gacha.db
+settings.db
 test.py
